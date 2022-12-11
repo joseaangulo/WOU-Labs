@@ -480,3 +480,10 @@ $RECYCLE.BIN/
 *.json
 *.csproj
 *.sln
+*.exe
+*.pro
+*.pro.user.d5437ef
+*.o
+*.stash
+*.qmake
+

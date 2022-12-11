@@ -1,0 +1,208 @@
+// Dynamic Programming C# implementation of
+// Matrix Chain Multiplication.
+// See the Cormen book for details of the
+// following algorithm
+using System;
+
+class GFG
+{
+
+    // Matrix Ai has dimension p[i-1] x p[i]
+    // for i = 1..arraySize
+    static void MatrixChainOrder(int[] p, int arraySize)
+    {
+
+        /* For simplicity of the program, one
+        extra row and one extra column are
+        allocated in m[][]. 0th row and 0th
+        column of m[][] are not used */
+
+        //GeekForGeeks code inspiration https://www.geeksforgeeks.org/matrix-chain-multiplication-cost-8/
+
+        //matrix array and solution array
+        int[,] matrix = new int[arraySize, arraySize];
+        int[,] solution = new int[arraySize, arraySize];
+        //declaring variables for k and the cost
+        int k;
+        int cost;
+
+
+        // cost is zero when multiplying
+        // matirix[n,n] single matrix.
+        for (int i = 1; i < arraySize; i++)
+            matrix[i, i] = 0;
+
+        //Cycles through chain by level
+        for (int lengthOfChain = 2; lengthOfChain < arraySize; lengthOfChain++)
+        {
+            for (int i = 1; i < arraySize - lengthOfChain + 1; i++)
+            {
+                int j = i + lengthOfChain - 1;
+                if (j == arraySize)
+                    continue;
+                matrix[i, j] = int.MaxValue; //make sure if statements checks cost right
+                for (k = i; k <= j - 1; k++)
+                {
+                    // cost = cost/scalar multiplications
+                    cost = matrix[i, k] + matrix[k + 1, j] + p[i - 1] * p[k] * p[j];
+                    if (cost < matrix[i, j])
+                    {
+                        matrix[i, j] = cost;
+                        solution[i, j] = k; //k is selected for the smallest cost
+                    }
+                }
+            }
+        }
+        Console.WriteLine($"The top right of array m is {matrix[1,arraySize -1]}. And the top" +
+            $"right of array s is: {solution[1, arraySize -1]}");
+    }
+
+
+
+    // Function for matrix chain multiplication
+    //Code inspiration from GeekForGeeks
+    //https://www.geeksforgeeks.org/matrix-chain-multiplication-cost-8/
+
+    /*
+     * I tried implementing my own code but could not get it to work
+     */
+    private static int[,] cost;
+
+    // Function for matrix chain multiplication
+    static int MatrixChainMemoised(int[] p, int i, int j)
+    {
+        //end of array
+        if (i == j)
+        {
+            return 0;
+        }
+        //returns value if already in array
+        if (cost[i, j] != -1)
+        {
+            return cost[i, j];
+        }
+        //itializes value with maximum for comparison
+        cost[i, j] = Int32.MaxValue;
+
+        //cycles through each step of the cost be checked
+        for (int k = i; k < j; k++)
+        {
+            //returns minimum cost for each k 
+            cost[i, j] = Math.Min(
+                cost[i, j], MatrixChainMemoised(p, i, k)
+                          + MatrixChainMemoised(p, k + 1, j)
+                          + p[i - 1] * p[k] * p[j]);
+        }
+        return cost[i, j];
+    }
+
+    static int MatrixChainOrderMemo(int[] p, int n)
+    {
+        //Calling helper function
+        int i = 1, j = n - 1;
+        return MatrixChainMemoised(p, i, j);
+    }
+    //Inspiration for code for algorithm from powerpoints and https://www.geeksforgeeks.org/0-1-knapsack-problem-dp-10/
+    static void KnapSackProblem(int[] weight, int[] values, int capacity)
+    {
+        int[,] knapSack = new int[values.Length + 1, capacity + 1];
+
+        //through each row
+        for (int i = 1; i <= values.Length; i++)
+        {
+            //through each column
+            for (int w = 1; w <= capacity; w++)
+            {
+                //checks if weight of the value fits the capacity
+                if (weight[i - 1] <= w)
+                {
+                    //Checks if additional value can be added or single value
+                    knapSack[i, w] = Math.Max(
+                        values[i - 1]
+                        + knapSack[i - 1, w - weight[i - 1]],
+                        knapSack[i - 1, w]);
+                }
+                else
+                {
+                    //knapsack is given value of previous cell
+                    knapSack[i, w] = knapSack[i - 1, w];
+                }
+            }
+        }
+
+        //Print out of 2d array
+        for (int i = 0; i <= values.Length; i++)
+        {
+            for (int w = 0; w <= capacity; w++)
+            {
+                Console.Write($"{knapSack[i, w]} \t");
+            }
+
+            Console.WriteLine();
+        }
+      
+    }
+
+
+    // Driver program to test above function
+    public static void Main()
+    {
+        Console.WriteLine("Problem 1 & 3: DP version of MCM Algorithm");
+        int[] array = new int[] {30, 4, 8, 5, 10, 25, 15};
+        int size = array.Length;
+
+        MatrixChainOrder(array, size);
+
+        Console.WriteLine();
+
+        Console.WriteLine("Problem 2 & 4: Memoization version of MCM Algorithm");
+        int[] arr = new int[] {30, 4, 8, 5, 10, 25, 15};
+        size = arr.Length;
+
+        cost = new int[arr.Length, arr.Length];
+        //Initializes array
+        for (int i = 0; i < cost.GetLength(0); i++)
+        {
+            for (int j = 0; j < cost.GetLength(1); j++)
+            {
+                cost[i, j] = -1;
+            }
+        }
+
+        Console.WriteLine($"Minimum number of multiplications is  {MatrixChainOrderMemo(arr, size)}");
+        for (int i = 1; i < cost.GetLength(0); i++)
+        {
+            for (int j = 1; j < cost.GetLength(1); j++)
+            {
+                Console.Write(cost[i, j] + "\t");
+            }
+
+            Console.WriteLine();
+        }
+
+        Console.WriteLine("Problem 5: Knapsack Problem 1 ");
+        int[] weights = {2, 3, 4, 5};
+        int[] values = {3, 4, 5, 6};
+
+        KnapSackProblem(weights, values, 5);
+        Console.WriteLine();
+        KnapSackProblem(weights, values, 6);
+
+        Console.WriteLine("Problem 6: Knapsack Problem 2 ");
+        /*6.Also show the result of your 0 / 1 Knapsack implementation on 
+        items[1: (12, 4), 2: (2, 2), 3: (1, 1) 4: (4, 10), 5: (1, 2)] and sack’s capacity being 15.*/
+
+        int[] weightsSecond = {12, 2, 1, 4, 1};
+        int[] valuesSecond = {4, 2, 1, 10, 2};
+        KnapSackProblem(weights, values, 15);
+
+        Console.WriteLine("Problem 7: ");
+        Console.WriteLine("I don't understand 7 and below.. I can only think of doing merge sort and taking 10 largest items from top.\n " +
+                          "I couldn't think of an algorithm that could do that in n time");
+
+
+
+    }
+}
+
+// This code is contributed

@@ -1,0 +1,13 @@
+boy(abraham).
+girl(mona).
+boy(clancy).
+girl(jackie).
+boy(herb).
+boy(homer).
+girl(marge).
+girl(patty).
+girl(selma).
+boy(bart).
+girl(lisa).
+girl(maggie).
+girl(ling).

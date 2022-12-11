@@ -1,0 +1,14 @@
+all:	Assign5Tester.exe Assign5Index.exe
+
+Assign5Tester.exe: makeDirectory
+	g++ -std=c++11 -g -o linux/Assign5Tester.exe tester.cpp IndexMap.cpp IndexRecord.cpp
+
+Assign5Index.exe: makeDirectory
+	g++ -std=c++11 -g -o linux/Assign5Index.exe IndexBuilder.cpp IndexMap.cpp IndexRecord.cpp
+
+makeDirectory:
+	mkdir -p linux
+
+clean:
+	#remove the linux directory
+	rm -rf linux

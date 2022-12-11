@@ -1,0 +1,10 @@
+all:
+	#make a directory to hold the build product
+	mkdir -p linux
+
+	#build my assign2.exe to that directory
+	g++ -std=c++11 -g -o linux/assign2.exe *.cpp
+
+clean:
+	#remove the linux directory
+	rm -rf linux

@@ -1,1 +1,1 @@
-These are all labs and school work I have completed throught my computer science undergrad.
+These are all my assignments and projects I have completed throught my computer science undergrad.
